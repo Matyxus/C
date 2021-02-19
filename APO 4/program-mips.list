@@ -1,0 +1,129 @@
+
+program code
+
+
+build/program-mips:     file format elf32-tradbigmips
+
+
+Disassembly of section my_text:
+
+00405130 <subroutine_fnc>: // from capital words makes small and if there are none, returns argument
+  405130:	27bdfff8 	addiu	sp,sp,-8 // sp -= 8 -> pre-loads space for 2 words on stack
+  405134:	afbe0004 	sw	s8,4(sp)	 //           
+  405138:	03a0f025 	move	s8,sp		 // s8 = sp -> first word (offest=4)-first argument
+  40513c:	afc40008 	sw	a0,8(s8)	 //  ->	a0 (parameter) saves into variable 8	
+  405140:	8fc20008 	lw	v0,8(s8)	 //  -> into v0 loadu this parameter
+  405144:	00000000 	nop					   //
+  405148:	2842005b 	slti	v0,v0,91 // If v0 < 91 -> v0 = 1 else 0
+  40514c:	10400006 	beqz	v0,405168 <subroutine_fnc+0x38> // branch if v0 == 0  -> jump
+  405150:	00000000 	nop					   // nop
+  405154:	8fc20008 	lw	v0,8(s8)	 // -> v0 = 8	    
+  405158:	00000000 	nop					   // nop
+  40515c:	28420041 	slti	v0,v0,65			// if v0 < 65  -> v0 = 1 else 0
+  405160:	10400004 	beqz	v0,405174 <subroutine_fnc+0x44> // if v0 == 0 -> jump
+  405164:	00000000 	nop					   // nop
+
+  405168:	8fc20008 	lw	v0,8(s8)	// ->  into v0 load 8 -> return
+  40516c:	1000000c 	b	4051a0 <subroutine_fnc+0x70> // jump
+  405170:	00000000 	nop		// nop 
+
+  405174:	3c020041 	lui	v0,0x41      //  .. ..
+  405178:	8c426170 	lw	v0,24944(v0) // again 0x0000000
+  40517c:	00000000 	nop					     // nop
+  405180:	24430001 	addiu	v1,v0,1		 //  -> into v1 get 0+1
+  405184:	3c020041 	lui	v0,0x41			 // 	
+  405188:	ac436170 	sw	v1,24944(v0) //  -> ??? useless
+  40518c:	8fc20008 	lw	v0,8(s8)		 //	 -> into v0 loads 8
+  405190:	00000000 	nop				       // nop
+  405194:	24420020 	addiu	v0,v0,32	 //  -> into v0 add 32 -> from big word makes small
+  405198:	afc20008 	sw	v0,8(s8)		 //  -> into second word s8 lod v0
+  40519c:	8fc20008 	lw	v0,8(s8)		 //  -> into v0 load second word s8
+
+  4051a0:	03c0e825 	move	sp,s8 	// jump	-> into sp load first word s8
+  4051a4:	8fbe0004 	lw	s8,4(sp)	// 	-> into s8 loads first word sp
+  4051a8:	27bd0008 	addiu	sp,sp,8	// 	-> into first sp loads second word sp
+  4051ac:	03e00008 	jr	ra			  // jump to 4051dc 
+  4051b0:	00000000 	nop				    // nop
+
+004051b4 <toplevel_fnc>:  // without argument
+  4051b4:	27bdffc8 	addiu	sp,sp,-56	// sp -= 56   -> pre-loads space for 14 words on stack
+  4051b8:	afbf0034 	sw	ra,52(sp)		//	-> on thirteenth word on stack save ra(adress of jump)
+  4051bc:	afbe0030 	sw	s8,48(sp)		//	-> saves into stack 12 safe register
+  4051c0:	03a0f025 	move	s8,sp			// 	-> into s8 loads number of  stack pointer
+  4051c4:	1000001e 	b	405240 <toplevel_fnc+0x8c> // jump
+  4051c8:	00000000 	nop				      // nop
+
+  4051cc:	83c20028 	lb	v0,40(s8)		// 	      ->into v0 loads tenth word s8
+  4051d0:	00000000 	nop				      // nop
+  4051d4:	00402025 	move	a0,v0			// what was read by read goes into subrutine -> into a0 goes v0
+  4051d8:	0c10144c 	jal	405130 <subroutine_fnc> // jumps to subrutine -> in ra will be adress of nop = 4051dc
+  4051dc:	00000000 	nop				      // nop, jump
+  4051e0:	00021600 	sll	v0,v0,0x18	// shift-logic-left  -> into v0 safe shiftted v0 by 24 (after returing from subrutine)
+  4051e4:	00021603 	sra	v0,v0,0x18	// shift-right-ari   -> into v0 safes shifted v0 by 24 
+  4051e8:	a3c20028 	sb	v0,40(s8)		// safe-byte         -> into tenth word s8 safe first byte v0 -> sign of number
+  4051ec:	24040001 	li	a0,1			  // Load Immediate    -> into a0 safe 1
+  4051f0:	27c20028 	addiu	v0,s8,40	//  -> into v0 safe first word s8+40 = tenth word s8
+  4051f4:	00402825 	move	a1,v0			// 	-> into a1 loads v0 (sign of number)
+  4051f8:	24060001 	li	a2,1			  //	-> into a2 loads 1
+  4051fc:	24020fa4 	li	v0,4004
+  405200:	0000000c 	syscall         // write(1., 2., 3.) -> write(1,"v0", 1(byte));
+  405204:	afc70018 	sw	a3,24(s8)		// a3=0	-> into sixth word s8 load 0	
+  405208:	afc20024 	sw	v0,36(s8)		//  -> into ninth word s8 load v0 (return of write)
+  40520c:	8fc20018 	lw	v0,24(s8)		//  -> into v0 load sixth word s8
+  405210:	00000000 	nop				// nop
+  405214:	14400004 	bnez	v0,405228 <toplevel_fnc+0x74>// branch if s != 0 -> never jumps, v0 is a3 which is always 0
+  405218:	00000000 	nop				// nop
+  40521c:	8fc20024 	lw	v0,36(s8)		// -> go to v0 load ninth word s8
+  405220:	10000002 	b	40522c <toplevel_fnc+0x78> // jump
+  405224:	00000000 	nop				// nop
+
+  405228:	2402ffff 	li	v0,-1			// jump, Load Immeadiate -> into v0 goes -1
+
+  40522c:	afc20020 	sw	v0,32(s8)	// jump	-> into eighth word s8 goes v0
+  405230:	8fc20020 	lw	v0,32(s8) // -> into v0 goes word s8
+  405234:	00000000 	nop				    // nop
+  405238:	04400018 	bltz	v0,40529c <toplevel_fnc+0xe8> // branch if v0 < 0 jump -> error
+  40523c:	00000000 	nop			      // nop
+
+  405240:	00002025 	move	a0,zero        // jump  -> into a0 load 0
+  405244:	27c20028 	addiu	v0,s8,40	     // -> into v0 load s8 + 40 -> tenth word
+  405248:	00402825 	move	a1,v0		       //	-> into a1 load v0	
+  40524c:	24060001 	li	a2,1		         // Load Immediate	-> into a2 load 1		
+  405250:	24020fa3 	li	v0,4003		       // function read	
+  405254:	0000000c 	syscall              // read()		-> (0=stdin, &a1, 1=1*byte);
+  405258:	afc70018 	sw	a3,24(s8)	       // a3 is always zero   -> into sixth poziton s8 load a3
+  40525c:	afc2001c 	sw	v0,28(s8)	       // v0 is return of read -> into seventh word s8 load v0
+  405260:	8fc20018 	lw	v0,24(s8)	       //	-> into v0 load sixth word s8
+  405264:	00000000 	nop			             // nop
+  405268:	14400004 	bnez	v0,40527c <toplevel_fnc+0xc8> // branch if s != 0  -> since v0=a3 is always 0 -> never jumps
+  40526c:	00000000 	nop			             // nop
+  405270:	8fc2001c 	lw	v0,28(s8)	       // -> onto seventh word safe v0
+  405274:	10000002 	b	405280 <toplevel_fnc+0xcc>// jump
+  405278:	00000000 	nop                  // nop
+  40527c:	2402ffff 	li	v0,-1            // jump,Load Immediate ->into v0 load -1 ** never happends **
+
+  405280:	afc20020 	sw	v0,32(s8)	   // jump	-> onto eighth word s8 safe v0
+  405284:	8fc30020 	lw	v1,32(s8)	   // -> into v1 load eighth word s8
+  405288:	24020001 	li	v0,1		     // Load Immediate    -> into v0 load 1
+  40528c:	1062ffcf 	beq	v1,v0,4051cc <toplevel_fnc+0x18> // branch if s==t -> never happens
+  405290:	00000000 	nop			// nop
+  405294:	10000002 	b	4052a0 <toplevel_fnc+0xec>// jump -> branch without condition -> jumps everytime
+  405298:	00000000 	nop			// nop
+  40529c:	00000000 	nop			// nop, jump
+
+  4052a0:	3c020041 	lui	v0,0x41		   // jump here, lui loads upper 16 bites ->
+  4052a4:	8c426170 	lw	v0,24944(v0) // 0x6170 lower 16 bites 0x416170 == address of my data -> into v0 goes 0x00000000 == return value = 0;
+  4052a8:	03c0e825 	move	sp,s8		   // stack pointer 	-> into sp load s8
+  4052ac:	8fbf0034 	lw	ra,52(sp)	   // end of program..
+  4052b0:	8fbe0030 	lw	s8,48(sp)
+  4052b4:	27bd0038 	addiu	sp,sp,56
+  4052b8:	03e00008 	jr	ra
+  4052bc:	00000000 	nop
+
+program data
+
+
+build/program-mips:     file format elf32-tradbigmips
+
+Contents of section my_data:
+ 416170 00000000                             ....            

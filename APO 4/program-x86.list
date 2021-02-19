@@ -1,0 +1,74 @@
+
+program code
+
+
+build/program-x86:     file format elf32-i386
+
+
+Disassembly of section my_text:
+
+080ac201 <subroutine_fnc>:
+ 80ac201:	55                   	push   %ebp
+ 80ac202:	89 e5                	mov    %esp,%ebp
+ 80ac204:	83 7d 08 5a          	cmpl   $0x5a,0x8(%ebp)
+ 80ac208:	7f 06                	jg     80ac210 <subroutine_fnc+0xf>
+ 80ac20a:	83 7d 08 40          	cmpl   $0x40,0x8(%ebp)
+ 80ac20e:	7f 05                	jg     80ac215 <subroutine_fnc+0x14>
+ 80ac210:	8b 45 08             	mov    0x8(%ebp),%eax
+ 80ac213:	eb 14                	jmp    80ac229 <subroutine_fnc+0x28>
+ 80ac215:	a1 20 c0 0d 08       	mov    0x80dc020,%eax
+ 80ac21a:	83 c0 01             	add    $0x1,%eax
+ 80ac21d:	a3 20 c0 0d 08       	mov    %eax,0x80dc020
+ 80ac222:	83 45 08 20          	addl   $0x20,0x8(%ebp)
+ 80ac226:	8b 45 08             	mov    0x8(%ebp),%eax
+ 80ac229:	5d                   	pop    %ebp
+ 80ac22a:	c3                   	ret    
+
+080ac22b <toplevel_fnc>:
+ 80ac22b:	55                   	push   %ebp
+ 80ac22c:	89 e5                	mov    %esp,%ebp
+ 80ac22e:	53                   	push   %ebx
+ 80ac22f:	83 ec 10             	sub    $0x10,%esp
+ 80ac232:	eb 36                	jmp    80ac26a <toplevel_fnc+0x3f>
+ 80ac234:	0f b6 45 f7          	movzbl -0x9(%ebp),%eax
+ 80ac238:	0f be c0             	movsbl %al,%eax
+ 80ac23b:	50                   	push   %eax
+ 80ac23c:	e8 c0 ff ff ff       	call   80ac201 <subroutine_fnc>
+ 80ac241:	83 c4 04             	add    $0x4,%esp
+ 80ac244:	88 45 f7             	mov    %al,-0x9(%ebp)
+ 80ac247:	bb 01 00 00 00       	mov    $0x1,%ebx                        // první parametr je 1, ebx = 1ní parametr
+ 80ac24c:	8d 45 f7             	lea    -0x9(%ebp),%eax			// to co ukládám do eax, nějaká adresa proměnné
+ 80ac24f:	ba 01 00 00 00       	mov    $0x1,%edx                        // jeden z parametrů je 1, edx = 3tí parametr
+ 80ac254:	89 c1                	mov    %eax,%ecx			// do druhého parametru ukládám hodnotu co je v eax
+ 80ac256:	b8 04 00 00 00       	mov    $0x4,%eax
+ 80ac25b:	cd 80                	int    $0x80    			// syscall_write(1=stdout, něco, 1=kolik bytů)
+ 80ac25d:	89 c3                	mov    %eax,%ebx
+ 80ac25f:	89 d8                	mov    %ebx,%eax
+ 80ac261:	89 45 f8             	mov    %eax,-0x8(%ebp)
+ 80ac264:	83 7d f8 00          	cmpl   $0x0,-0x8(%ebp)
+ 80ac268:	78 25                	js     80ac28f <toplevel_fnc+0x64>
+ 80ac26a:	bb 00 00 00 00       	mov    $0x0,%ebx			// do prvního parametr jde 0
+ 80ac26f:	8d 45 f7             	lea    -0x9(%ebp),%eax			// to co ukládám do eax, nějaká adresa, proměnné ta sámá co write
+ 80ac272:	ba 01 00 00 00       	mov    $0x1,%edx			// do třetího parametru jde 1
+ 80ac277:	89 c1                	mov    %eax,%ecx			// do druhého parametru ukládám hodnotu co je v eax
+ 80ac279:	b8 03 00 00 00       	mov    $0x3,%eax
+ 80ac27e:	cd 80                	int    $0x80				// syscall_read(0=stdin, něco, 1=kolik bytů), to co přečte to printne na stdout
+ 80ac280:	89 c3                	mov    %eax,%ebx
+ 80ac282:	89 d8                	mov    %ebx,%eax
+ 80ac284:	89 45 f8             	mov    %eax,-0x8(%ebp)
+ 80ac287:	83 7d f8 01          	cmpl   $0x1,-0x8(%ebp)
+ 80ac28b:	74 a7                	je     80ac234 <toplevel_fnc+0x9>
+ 80ac28d:	eb 01                	jmp    80ac290 <toplevel_fnc+0x65>
+ 80ac28f:	90                   	nop
+ 80ac290:	a1 20 c0 0d 08       	mov    0x80dc020,%eax
+ 80ac295:	8b 5d fc             	mov    -0x4(%ebp),%ebx
+ 80ac298:	c9                   	leave  
+ 80ac299:	c3                   	ret    
+
+program data
+
+
+build/program-x86:     file format elf32-i386
+
+Contents of section my_data:
+ 80dc020 00000000                             ....            
